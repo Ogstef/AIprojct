@@ -1,0 +1,76 @@
+public int[] heuristicFunction(int p) {
+		int counter = 0;
+		int countSelect = 0;
+		int[] ourSelection = new int[10];
+		int disCard=0;
+		int [] opponentsBestCards=new int[5];
+
+		for (int i = 0; i < 5; i++) {
+			if ( p==1){
+				opponentsBestCards[i] = minCardOfEachExpedition(1)[i];
+
+			}
+			else {
+				opponentsBestCards[i] = minCardOfEachExpedition(2)[i];
+
+			}
+
+			for (int y = 0; y < getCardsAvailableInDisplay().length; y++) {
+				if (getCardsAvailableInDisplay()[y]- opponentsBestCards[i] < 5
+						&& categorizeCards(opponentsBestCards[i])== categorizeCards(getCardsAvailableInDisplay()[y]))
+						{
+							disCard = y;
+						}
+				if (getRoundNo()<=2 &&
+						categorizeCards(getCardsAvailableInDisplay()[y]) == categorizeCards(minCardOfEachExpedition(p)[i])
+						&&(getCardsAvailableInDisplay()[y]==1
+						||getCardsAvailableInDisplay()[y]==21
+						||getCardsAvailableInDisplay()[y]==31
+						||getCardsAvailableInDisplay()[y]==41)
+						&& (minCardOfEachExpedition(p)[i]==1
+						|| minCardOfEachExpedition(p)[i]==11
+						|| minCardOfEachExpedition(p)[i]==21
+						|| minCardOfEachExpedition(p)[i]==31
+						|| minCardOfEachExpedition(p)[i]==41))
+				{
+
+							counter ++;
+							ourSelection[countSelect] += (y+1);
+							countSelect++;
+				}
+				else if (getRoundNo() <= 2
+						&& getCardsAvailableInDisplay()[y] - minCardOfEachExpedition(p)[i] < 3
+						&& getCardsAvailableInDisplay()[y] - minCardOfEachExpedition(p)[i] > 0
+						&& categorizeCards(getCardsAvailableInDisplay()[y]) == categorizeCards(minCardOfEachExpedition(p)[i]))
+					{
+
+							counter++;
+							ourSelection[countSelect] += (y + 1);
+							countSelect++;
+					}
+				else if (getRoundNo() > 2
+						&& getCardsAvailableInDisplay()[y] - minCardOfEachExpedition(p)[i] < 5
+						&& getCardsAvailableInDisplay()[y] - minCardOfEachExpedition(p)[i] > 0
+						&& categorizeCards(getCardsAvailableInDisplay()[y]) == categorizeCards(minCardOfEachExpedition(p)[i]))
+					{
+							counter++;
+							ourSelection[countSelect] += (y + 1);
+							countSelect++;
+					}
+
+			}
+
+		}
+		Arrays.sort(ourSelection);
+		int retval=0;
+		for (int digit: ourSelection){
+			retval *=10;
+			retval +=digit;
+		}
+		retval = Integer.parseInt(String.valueOf(retval) +String.valueOf(disCard));
+		int [] whatToDo = new int[]{counter, retval};
+		System.out.println("We are in heuristic \n");
+		System.out.println("This is what to do array" + Arrays.toString(whatToDo));
+		System.out.println("This is our selection" + Arrays.toString(ourSelection));
+		return whatToDo;
+	}
